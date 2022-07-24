@@ -1,0 +1,15 @@
+.header{
+    background-color: white;
+    width:device-width;
+    height: 50px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    font-size: 50px;
+    font-family:'Times New Roman', Times, serif ;
+    border-radius: 5px;
+}
+body{
+    background-color: rgba(167, 167, 167, 0.824);
+}
