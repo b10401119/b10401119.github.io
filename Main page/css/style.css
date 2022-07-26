@@ -1,0 +1,187 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Edu+TAS+Beginner&display=swap');
+
+/*------    ROOT VARIABLES    ------*/
+:root{
+    --color-primary:#7380ec;
+    --color-cool:#ff7782;
+    --color-sucess:#41f1b6;
+    --color-warning:#ffbb55;
+    --color-white:#fff;
+    --color-info-dark:#7d8da1;
+    --color-info-light:#dce1eb;
+    --color-dark:#363949;
+    --color-light:rgb(132,139,200,0.18);
+    --color-primary-variant:#111e88;
+    --color-dark-variant:#677483;
+    --color-background:#f6f6f9;
+
+    --card-border-radius:2rem;
+    --border-radius-1:0.4rem;
+    --border-radius-2:0.8rem;
+    --border-radius-3:1.2rem;
+
+    --card-padding:1.8rem:;
+    --padding-1:1.2rem;
+
+    --box-shadow:0.2rem 3rem var(--color-light);
+}
+*{
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    appearance: None;
+    border: 0;
+    text-decoration: None;
+    list-style: None;
+    box-sizing: border-box;
+}
+html{
+    font-size: 14px;
+
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Edu TAS Beginner', cursive;
+    font-size:0.88rem;
+    background-color: var(--color-background);
+    user-select: none;
+    overflow-x: hidden;
+
+}
+
+.container{
+    display:grid;
+    width: 96%;
+    margin: 0 auto;
+    gap: 1.8rem;
+    grid-template-columns: 14rem auto 23rem;
+}
+
+a{
+    color: var(--color-dark);
+}
+img{
+    display:block;
+    width: 100%;
+}
+
+h1{
+    font-weight: 800;
+    font-size: 1.8rem;
+}
+
+h2{
+    font-size: 2.3rem;
+}
+
+h3{
+    font-size: 1.1rem;
+}
+
+h4{
+    font-size:0.8rem;
+}
+
+h5{
+    font-size: 0.77rem;
+}
+
+small{
+    font-size: 0.75rem;
+}
+
+.profile-photo{
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.text-muted{
+    color: var(--color-info-dark);
+}
+
+p{
+    color: var(--color-dark-variant);
+}
+
+b{
+    color: var(--color-dark);
+}
+
+.primary{
+    color: var(--color-primary);
+}
+.cool{
+    color: var(--color-cool);
+}
+.success{
+    color: var(--color-sucess);
+}
+.warning{
+    color: var(--color-warning);
+}
+
+aside{
+    height:100vh;
+}
+
+aside .top{
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.4rem;
+}
+
+aside .logo{
+    display: flex;
+    gap: 0.8rem;
+}
+
+aside .logo img{
+    width: 3rem;
+    height: 3rem;
+}
+
+aside .close{
+    display: none;
+}
+
+aside .sidebar{
+    background: white;
+    display: flex;
+    flex-direction: column;
+    top: 3rem;
+    position:relative;
+    height: 86vh;
+}
+
+aside .h3{
+    font-weight: 500;
+}
+
+aside .sidebar a{
+    background-color: white;
+    color: var(--color-info-dark);
+    display: flex;
+    position: relative;
+    margin-left: 0rem;
+    padding-left: 0.6rem;
+    gap: 1rem;
+    align-items: center;
+    height: 4rem;
+    transition: all 300ms ease;
+}
+
+aside .sidebar a span{
+    font-size: 1.4rem;
+}
+
+aside .sidebar a:last-child{
+    position:absolute;
+    bottom: 2rem;
+    width: 100%;
+}
