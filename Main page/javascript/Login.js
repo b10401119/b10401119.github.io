@@ -14,7 +14,7 @@ function check(){
     var password = document.getElementById("password").value
     for (i = 0;i < objaccounts.length; i++){
         if(username == objaccounts[i].username && password == objaccounts[i].password){
-            document.getElementById("sign_in").href = "Main page.html"
+            document.getElementById("sign_in").href = "Main page/Main page.html"
             return
         }
     }
