@@ -1,0 +1,89 @@
+@import "root.css";
+*{
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    appearance: None;
+    border: 0;
+    text-decoration: None;
+    list-style: None;
+    box-sizing: border-box;
+}
+html{
+    font-size: 14px;
+}
+body{
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Edu TAS Beginner', cursive;
+    font-size:0.88rem;
+    background-color: var(--color-background);
+    user-select: none;
+    overflow-x: hidden;
+    color: var(--color-dark);
+}
+
+.container{
+    display:grid;
+    width: 96%;
+    margin: 0 auto;
+    gap: 1.8rem;
+    grid-template-columns: 14rem auto 23rem;
+}
+
+a{
+    color: var(--color-dark);
+}
+img{
+    display:block;
+    width: 100%;
+}
+
+h1{
+    font-weight: 800;
+    font-size: 3rem;
+    display: inline;
+}
+
+h2{
+    font-size: 2.3rem;
+}
+
+h3{
+    font-size: 1.1rem;
+}
+
+h4{
+    font-size:0.8rem;
+}
+
+h5{
+    font-size: 1.15rem;
+}
+
+h6{
+    font-size: 1.5rem;
+}
+
+small{
+    font-size: 0.75rem;
+}
+
+.profile-photo{
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.text-muted{
+    color: var(--color-info-dark);
+}
+
+p{
+    color: var(--color-dark-variant);
+}
+
+b{
+    color: var(--color-dark);
+}
