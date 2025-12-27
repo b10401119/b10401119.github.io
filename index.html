@@ -1,49 +1,2148 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale = 1.0">
-        <link rel="apple-touch-icon" href="Main page/pictures/Logo2.jpeg">
-        <title>Login</title>
-        <link rel = "stylesheet" type="text/css" href="Main page/css/login.css">
-        <link rel="icon" type="image/x-icon" href="Main page/pictures/Logo2.jpeg">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" 
-        rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
-    </head>
-    <body>
-        <script src="Main page/javascript/Login.js" type="text/javascript"></script>
-        <div class="picture">
-            <img src="Main page/pictures/Spy-x-Family-Anya-Forger.webp" height="420" width="800">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Tester</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 40px auto; }
+    .option-btn {
+      display: block;
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+      transition: background 0.2s;
+    }
+    .option-btn.correct { background: #c8f7c5; }
+    .option-btn.incorrect { background: #f7c5c5; }
+    .disabled { pointer-events: none; opacity: 0.7; }
+    .meta { font-size: 0.9em; color: #666; margin-top: 10px; }
+    .result { font-size: 1.2em; margin: 20px 0; }
+  </style>
+</head>
+<body>
+  <h2>Quiz Tester</h2>
+  <div id="quiz-container">載入中...</div>
+  <script>
+    // Paste your 228-question array here
+    let quizData = [
+  {
+    "question": "下列何者非鎖定骨髓內釘的優點",
+    "falseOptions": ["Anti-bending", "Internal splint","Less soft tissue damage"],
+    "correctOptions": ["Anti-rotation"],
+    "category": "骨折固定",
+    "id": 1,
+    "page_num": 1,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下肢骨骨折固定後能忍受的Rotation可達幾度",
+    "falseOptions": ["20度", "30度", "40度"],
+    "correctOptions": ["10度"],
+    "category": "骨折固定",
+    "id": 2,
+    "page_num": 1,
+    "difficulty": "medium"
+  },
+  {
+    "question": "肱骨骨折最常見的神經傷害為哪一條神經",
+    "falseOptions": ["Ulnar nerve", "Median nerve", "Musculocutaneous nerve"],
+    "correctOptions": ["Radial nerve"],
+    "category": "上肢骨折",
+    "id": 3,
+    "page_num": 2,
+    "difficulty": "easy"
+  },
+  {
+    "question": "老人近端肱骨骨折Neer classification 4 parts 以何種治療為主",
+    "falseOptions": ["Closed reduction", "Open reduction", "Sling without reduction"],
+    "correctOptions": ["Hemi-shoulder arthroplasty"],
+    "category": "上肢骨折",
+    "id": 4,
+    "page_num": 2,
+    "difficulty": "medium"
+  },
+  {
+    "question": "小孩遠端橈骨骨折如果移位則在closed reduction 後以何種固定較佳",
+    "falseOptions": ["Splint only", "Cast only", "Reconstruction plate"],
+    "correctOptions": ["K-pins"],
+    "category": "兒童骨折",
+    "id": 5,
+    "page_num": 2,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Compression Hip Screw 最適合用於以下的哪種骨折",
+    "falseOptions": ["Femoral head fracture", "Displaced femoral neck fracture", "Femoral subtrochanteric fracture"],
+    "correctOptions": ["Femoral intertrochanteric fracture"],
+    "category": "髖部骨折",
+    "id": 6,
+    "page_num": 3,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Displaced femoral neck fracture 造成的femoral head avascular necrosis 為何血管的分支受到傷害",
+    "falseOptions": ["Descending genicular artery", "Perforating artery", "Superior gluteal artery"],
+    "correctOptions": ["Femoral circumflex artery"],
+    "category": "髖部骨折",
+    "id": 7,
+    "page_num": 3,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Multiple trauma 的評分 Injury Severity Score （ISS） 最高分為幾分",
+    "falseOptions": ["100", "50", "25"],
+    "correctOptions": ["75"],
+    "category": "創傷評估",
+    "id": 8,
+    "page_num": 4,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Open fracture 的分類中，主要神經血管受損為Gustilo type 的",
+    "falseOptions": ["Type II", "Type IIIA", "Type IIIB"],
+    "correctOptions": ["Type IIIC"],
+    "category": "開放性骨折",
+    "id": 9,
+    "page_num": 4,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Hypertrophic non-union 最主要的原因",
+    "falseOptions": ["Infection", "Comminuted fracture", "Excess soft tissue dissection"],
+    "correctOptions": ["Unstable fixation"],
+    "category": "骨折癒合",
+    "id": 10,
+    "page_num": 4,
+    "difficulty": "medium"
+  },
+  {
+    "question": "肩關節脫臼最常伴隨的骨折為",
+    "falseOptions": ["Glenoid fracture", "Clavicle fracture", "Humeral shaft fracture"],
+    "correctOptions": ["Humeral greater tuberosity avulsion fracture"],
+    "category": "肩關節脫臼",
+    "id": 11,
+    "page_num": 5,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Shoulder Dislocation最常見為",
+    "falseOptions": ["Posterior dislocation", "Subglenoid dislocation", "Superior dislocation"],
+    "correctOptions": ["Anterior dislocation"],
+    "category": "肩關節脫臼",
+    "id": 12,
+    "page_num": 5,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何者非骨盆骨折手術的目標",
+    "falseOptions": ["止血", "復位", "穩定"],
+    "correctOptions": ["美觀"],
+    "category": "骨盆骨折",
+    "id": 13,
+    "page_num": 6,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何種骨盆骨折會有sacroiliac joint diastasis",
+    "falseOptions": ["AP compression", "Lateral compression", "都不可能發生"],
+    "correctOptions": ["Vertical shearing"],
+    "category": "骨盆骨折",
+    "id": 14,
+    "page_num": 6,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Colles’ fracture 為何種distal radius fracture",
+    "falseOptions": ["Intra-articular, dorsal displaced", "Extra-articular, volar tilting", "Intra-articular, dorsal displaced"],
+    "correctOptions": ["Extra-articular, dorsal tilting"],
+    "category": "前臂骨折",
+    "id": 15,
+    "page_num": 7,
+    "difficulty": "easy"
+  },
+  {
+    "question": "X光評估distal radius fracture 治療的指標, 何者為非",
+    "falseOptions": ["Radial height", "Radial inclination", "Volar inclination"],
+    "correctOptions": ["Radial variance"],
+    "category": "前臂骨折",
+    "id": 16,
+    "page_num": 7,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Distal radius fracture 的併發症何者不常見",
+    "falseOptions": ["Non-union", "Mal-union", "Median nerve compression"],
+    "correctOptions": ["Radial nerve compression"],
+    "category": "前臂骨折",
+    "id": 17,
+    "page_num": 7,
+    "difficulty": "medium"
+  },
+  {
+    "question": "急診室有一病人，小腿open fracture傷口血流不止，下列何種處理方式止血不適當",
+    "falseOptions": ["用石膏固定骨折", "直接加壓", "使用止血帶"],
+    "correctOptions": ["找出流血的血管與以電燒"],
+    "category": "開放性骨折",
+    "id": 18,
+    "page_num": 8,
+    "difficulty": "medium"
+  },
+  {
+    "question": "嚴重外傷的患者，Glasgow coma scale 小於幾分即可考慮插管",
+    "falseOptions": ["15", "13", "10"],
+    "correctOptions": ["8"],
+    "category": "創傷評估",
+    "id": 19,
+    "page_num": 8,
+    "difficulty": "easy"
+  },
+  {
+    "question": "一外傷病人送入急診室時意識不清，右小腿明顯變形，何者應為最優先的處理",
+    "falseOptions": ["全身四肢找X-ray", "做Head CT", "送入手術房處理骨折"],
+    "correctOptions": ["確立穩定的生命跡象"],
+    "category": "創傷評估",
+    "id": 20,
+    "page_num": 9,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Compartment Syndrome 好發在何種骨折",
+    "falseOptions": ["Femur", "Ankle", "Metatarsus"],
+    "correctOptions": ["Tibia"],
+    "category": "併發症",
+    "id": 21,
+    "page_num": 10,
+    "difficulty": "easy"
+  },
+  {
+    "question": "臨床上會出現哪些症狀，除了",
+    "falseOptions": ["Pain", "Pale", "Paresthesia"],
+    "correctOptions": ["Pyremia"],
+    "category": "併發症",
+    "id": 22,
+    "page_num": 10,
+    "difficulty": "medium"
+  },
+  {
+    "question": "確定診斷後需行何種手術",
+    "falseOptions": ["Remove of the implants", "Drainage", "Vessel bypass"],
+    "correctOptions": ["Fasciotomy"],
+    "category": "併發症",
+    "id": 23,
+    "page_num": 10,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者不為fat embolism 的triad",
+    "falseOptions": ["神智不清", "呼吸困難", "皮膚出血點"],
+    "correctOptions": ["心搏加速"],
+    "category": "併發症",
+    "id": 24,
+    "page_num": 11,
+    "difficulty": "medium"
+  },
+  {
+    "question": "長骨骨折術後發生fat embolism的主要處理方式",
+    "falseOptions": ["服用降血脂的藥物", "手術將fat 取出", "取出骨釘改用石膏治療"],
+    "correctOptions": ["支持性治療"],
+    "category": "併發症",
+    "id": 25,
+    "page_num": 11,
+    "difficulty": "easy"
+  },
+  {
+    "question": "過度使用造成的骨折, 下列何者為非",
+    "falseOptions": ["Stress fracture", "Fatigue fracture", "March fracture"],
+    "correctOptions": ["Barton’s fracture"],
+    "category": "壓力性骨折",
+    "id": 26,
+    "page_num": 12,
+    "difficulty": "medium"
+  },
+  {
+    "question": "臨床上X-ray 看不到fracture line而懷疑stress fracture，最常使用哪一項檢查來做診斷",
+    "falseOptions": ["MRI", "CT scan", "Sonography"],
+    "correctOptions": ["Bone scan"],
+    "category": "壓力性骨折",
+    "id": 27,
+    "page_num": 12,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Humerus shaft fracture 最常併發的神經受損為哪一條神經",
+    "falseOptions": ["Median nerve", "Ulnar nerve", "Musculocutaneous nerve"],
+    "correctOptions": ["Radial nerve"],
+    "category": "上肢骨折",
+    "id": 28,
+    "page_num": 13,
+    "difficulty": "easy"
+  },
+  {
+    "question": "橈神經的受損不會有下列哪項症狀",
+    "falseOptions": ["手腕無法dorsiflexion", "大拇指背面感覺較差", "MP joint 無法伸直"],
+    "correctOptions": ["IP joint 無法伸直"],
+    "category": "神經損傷",
+    "id": 29,
+    "page_num": 13,
+    "difficulty": "medium"
+  },
+  {
+    "question": "71歲女性，主述跌倒後左側髖部疼痛，來到急診室下列哪項檢查是非必要的",
+    "falseOptions": ["Patrick test", "Check medical condition", "Check limb length"],
+    "correctOptions": ["McMurray test"],
+    "category": "髖部骨折",
+    "id": 30,
+    "page_num": 14,
+    "difficulty": "medium"
+  },
+  {
+    "question": "73歲病人確定診斷為femoral neck fracture，Garden Type IV (complete fracture with complete displacement)，對於病人最好的手術方式為",
+    "falseOptions": ["Closed reduction with hip spica", "Closed reduction and internal fixation", "Open reduction and internal fixation"],
+    "correctOptions": ["Hemi-arthroplasty"],
+    "category": "髖部骨折",
+    "id": 31,
+    "page_num": 14,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Podagara 為典型的急性痛風發作，請問在何部位",
+    "falseOptions": ["PIP joint", "DIP joint", "Wrist joint"],
+    "correctOptions": ["First MTP joint"],
+    "category": "痛風",
+    "id": 32,
+    "page_num": 15,
+    "difficulty": "easy"
+  },
+  {
+    "question": "痛風好發在男性, 請問好發年齡層為何",
+    "falseOptions": ["10~20 y/o", "20~30 y/o", "60~80 y/o"],
+    "correctOptions": ["30~60 y/o"],
+    "category": "痛風",
+    "id": 33,
+    "page_num": 15,
+    "difficulty": "easy"
+  },
+  {
+    "question": "痛風確定診斷的方法為何",
+    "falseOptions": ["MRI", "Sonography", "X-ray of lesion site"],
+    "correctOptions": ["Joint fluid aspiration and examination"],
+    "category": "痛風",
+    "id": 34,
+    "page_num": 15,
+    "difficulty": "easy"
+  },
+  {
+    "question": "膝退化性關節炎的治療方式以下何者為非",
+    "falseOptions": ["NSAID", "Steroid injection", "Artz (Hyaluronic acid) injection"],
+    "correctOptions": ["Traction"],
+    "category": "退化性關節炎",
+    "id": 35,
+    "page_num": 16,
+    "difficulty": "medium"
+  },
+  {
+    "question": "以下何者不是膝退化性關節炎手術的侵入路徑",
+    "falseOptions": ["Medial parapatellar approach", "Lateral parapatellar approach", "Subvastus approach"],
+    "correctOptions": ["Transpatellar approach"],
+    "category": "膝關節置換",
+    "id": 36,
+    "page_num": 16,
+    "difficulty": "hard"
+  },
+  {
+    "question": "手術中發現膝退化性關節炎很嚴重, 需使用到 Posterior Stabilizing knee prosthesis, 請問可能是哪條韌帶已耗損了",
+    "falseOptions": ["ACL", "MCL", "LCL"],
+    "correctOptions": ["PCL"],
+    "category": "膝關節置換",
+    "id": 37,
+    "page_num": 16,
+    "difficulty": "medium"
+  },
+  {
+    "question": "以下何者不是 ACR ( American College of Rheumatology) 的 criteria",
+    "falseOptions": ["Morning stiffness >/ 1 hr (>/6 wks)", "Symmetricity", "Subcutaneous node"],
+    "correctOptions": ["Swelling >/ 5 joints (>/ 6 wks)"],
+    "category": "類風濕性關節炎",
+    "id": 38,
+    "page_num": 17,
+    "difficulty": "hard"
+  },
+  {
+    "question": "以下何者不是第二線治療RA的藥物",
+    "falseOptions": ["Plaquenil", "MTX", "Salfasalazine"],
+    "correctOptions": ["Mobic"],
+    "category": "類風濕性關節炎",
+    "id": 39,
+    "page_num": 17,
+    "difficulty": "medium"
+  },
+  {
+    "question": "類風濕性關節炎的患者抽血檢查哪一項會有發現",
+    "falseOptions": ["RA factor","CRP","ESR"],
+    "correctOptions": ["All above"],
+    "category": "類風濕性關節炎",
+    "id": 40,
+    "page_num": 17,
+    "difficulty": "easy"
+  },
+  {
+    "question": "僵直性脊椎炎的患者伴隨有髖關節受侵犯的比例約為",
+    "falseOptions": ["20%", "30%", "80%"],
+    "correctOptions": ["50%"],
+    "category": "僵直性脊椎炎",
+    "id": 41,
+    "page_num": 18,
+    "difficulty": "medium"
+  },
+  {
+    "question": "僵直性髖關節炎的患者接受 THR 手術時，有時會做 trochanteric osteotomy，為何",
+    "falseOptions": ["Increasing ROM (Range of motion) of hip", "Increasing muscle power", "Correct leg length"],
+    "correctOptions": ["To avoid heterotopic ossification"],
+    "category": "僵直性脊椎炎",
+    "id": 42,
+    "page_num": 18,
+    "difficulty": "hard"
+  },
+  {
+    "question": "僵直性髖關節炎的患者以下敘述何者為非",
+    "falseOptions": ["Hip flexion contracture is common.", "Heterotopic ossification may follow THR (Total hip replacement)", "通常兩側髖關節都會受侵犯"],
+    "correctOptions": ["通常先有髖關節症狀才有背部症狀"],
+    "category": "僵直性脊椎炎",
+    "id": 43,
+    "page_num": 18,
+    "difficulty": "medium"
+  },
+  {
+    "question": "因髖關節發育不良導致退化性關節炎的中年患者, 其治療方式以何為主",
+    "falseOptions": ["NSAID", "Arthroscopy", "Steroid injection"],
+    "correctOptions": ["THR"],
+    "category": "髖關節發育不良",
+    "id": 44,
+    "page_num": 19,
+    "difficulty": "medium"
+  },
+  {
+    "question": "髖關節發育不良導致退化性關節炎的患者術中最需注意的是",
+    "falseOptions": ["Acetabular cup", "Femoral stem 的粗細", "Insert 的材質"],
+    "correctOptions": ["Sciatic nerve 的laxity"],
+    "category": "髖關節發育不良",
+    "id": 45,
+    "page_num": 19,
+    "difficulty": "hard"
+  },
+  {
+    "question": "兩側髖關節發育不良導致退化性關節炎的患者其步態為",
+    "falseOptions": ["Antalgic gait", "Limping gait", "Calcaneus gait"],
+    "correctOptions": ["Waddling gait"],
+    "category": "髖關節發育不良",
+    "id": 46,
+    "page_num": 19,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Infected joint replacement 最常見的菌種為",
+    "falseOptions": ["S. aureus", "Streptococcus", "Enterococcus"],
+    "correctOptions": ["S. epidermidis"],
+    "category": "人工關節感染",
+    "id": 47,
+    "page_num": 20,
+    "difficulty": "medium"
+  },
+  {
+    "question": "長期使用Vancomycin, 須監控血液中何項",
+    "falseOptions": ["Liver profile", "Electrolyte profile", "Coagulation function"],
+    "correctOptions": ["Renal profile"],
+    "category": "人工關節感染",
+    "id": 48,
+    "page_num": 20,
+    "difficulty": "easy"
+  },
+  {
+    "question": "感染的人工關節按標準採取二階段治療，Antibiotics 至少要治療多久",
+    "falseOptions": ["7 days", "14 days", "28 days"],
+    "correctOptions": ["42 days"],
+    "category": "人工關節感染",
+    "id": 49,
+    "page_num": 20,
+    "difficulty": "medium"
+  },
+  {
+    "question": "最常見的轉移性骨腫瘤為何",
+    "falseOptions": ["Lung cancer", "Renal cancer", "Thyroid cancer"],
+    "correctOptions": ["Prostate cancer"],
+    "category": "骨腫瘤",
+    "id": 50,
+    "page_num": 21,
+    "difficulty": "medium"
+  },
+  {
+    "question": "轉移性骨腫瘤最常好犯的部位為",
+    "falseOptions": ["Rib", "Femur", "Humerus"],
+    "correctOptions": ["Spine"],
+    "category": "骨腫瘤",
+    "id": 51,
+    "page_num": 21,
+    "difficulty": "easy"
+  },
+  {
+    "question": "當懷疑有轉移性骨腫瘤時需做何種檢查",
+    "falseOptions": ["Lab exams","MRI of lesion site","Bone scan","Chest CT"],
+    "correctOptions": ["All above"],
+    "category": "骨腫瘤",
+    "id": 52,
+    "page_num": 21,
+    "difficulty": "easy"
+  },
+  {
+    "question": "最常見的原發性惡性骨腫瘤為何",
+    "falseOptions": ["Ewing’s sarcoma", "Chondrosarcoma", "Angiosarcoma"],
+    "correctOptions": ["Osteosarcoma"],
+    "category": "骨腫瘤",
+    "id": 53,
+    "page_num": 22,
+    "difficulty": "easy"
+  },
+  {
+    "question": "骨肉瘤（osteosarcoma）最常好犯的部位為",
+    "falseOptions": ["Spine", "Proximal femur", "Proximal humerus"],
+    "correctOptions": ["Region of knee ( distal femur or proximal tibia)"],
+    "category": "骨腫瘤",
+    "id": 54,
+    "page_num": 22,
+    "difficulty": "easy"
+  },
+  {
+    "question": "骨肉瘤（osteosarcoma）最常遠方轉移的部位為何",
+    "falseOptions": ["Liver", "Kidney", "Colon"],
+    "correctOptions": ["Lung"],
+    "category": "骨腫瘤",
+    "id": 55,
+    "page_num": 22,
+    "difficulty": "easy"
+  },
+  {
+    "question": "最常見的軟組織腫瘤為何",
+    "falseOptions": ["Fibroma", "Giant cell tumor", "Chondrosarcoma"],
+    "correctOptions": ["Lipoma"],
+    "category": "軟組織腫瘤",
+    "id": 56,
+    "page_num": 23,
+    "difficulty": "easy"
+  },
+  {
+    "question": "最常見的軟組織肉瘤為何",
+    "falseOptions": ["Synovial sarcoma", "Liposarcoma", "Fibrosarcoma"],
+    "correctOptions": ["Malignant fibrous histocytoma"],
+    "category": "軟組織腫瘤",
+    "id": 57,
+    "page_num": 23,
+    "difficulty": "medium"
+  },
+  {
+    "question": "軟組織肉瘤如何確定診斷",
+    "falseOptions": ["MRI (Magnetic resonance image)", "CT (Computed tomography)", "Bone scan"],
+    "correctOptions": ["Biopsy"],
+    "category": "軟組織腫瘤",
+    "id": 58,
+    "page_num": 23,
+    "difficulty": "easy"
+  },
+  {
+    "question": "最常見的良性骨腫瘤為何",
+    "falseOptions": ["Osteoblastoma", "Osteoma", "Osteoid osteoma"],
+    "correctOptions": ["Osteochondroma"],
+    "category": "骨腫瘤",
+    "id": 59,
+    "page_num": 24,
+    "difficulty": "easy"
+  },
+  {
+    "question": "骨軟骨瘤最常好犯的部位為",
+    "falseOptions": ["Spine", "Distal radius", "Proximal humerus"],
+    "correctOptions": ["Region of knee ( distal femur or proximal tibia)"],
+    "category": "骨腫瘤",
+    "id": 60,
+    "page_num": 24,
+    "difficulty": "easy"
+  },
+  {
+    "question": "良性骨腫瘤何時需手術治療",
+    "falseOptions": ["X-ray 不好看", "預防性切除", "病患要求"],
+    "correctOptions": ["臨床上有症狀"],
+    "category": "骨腫瘤",
+    "id": 61,
+    "page_num": 24,
+    "difficulty": "medium"
+  },
+  {
+    "question": "巨大細胞瘤較常出現在以下那個年齡層",
+    "falseOptions": ["0~20 y/o", "40~60 y/o", "60~80 y/o"],
+    "correctOptions": ["20~50 y/o"],
+    "category": "骨腫瘤",
+    "id": 62,
+    "page_num": 25,
+    "difficulty": "medium"
+  },
+  {
+    "question": "巨大細胞瘤影像檢查顯示骨皮質受損受侵犯是哪一期",
+    "falseOptions": ["Stage I", "Stage III", "Stage IV"],
+    "correctOptions": ["Stage II"],
+    "category": "骨腫瘤",
+    "id": 63,
+    "page_num": 25,
+    "difficulty": "hard"
+  },
+  {
+    "question": "巨大細胞瘤在臨床與影像檢查上與下列哪一個疾病較不相似",
+    "falseOptions": ["Nonossifying fibroma", "Aneurysmal bone cyst", "Hyperparathyroidism"],
+    "correctOptions": ["Chondrosarcoma"],
+    "category": "骨腫瘤",
+    "id": 64,
+    "page_num": 25,
+    "difficulty": "hard"
+  },
+  {
+    "question": "軟骨肉瘤好犯在以下那個年齡層的男性",
+    "falseOptions": ["0~20 y/o", "20~50 y/o", "60~80 y/o"],
+    "correctOptions": ["50~60 y/o"],
+    "category": "骨腫瘤",
+    "id": 65,
+    "page_num": 26,
+    "difficulty": "medium"
+  },
+  {
+    "question": "軟骨肉瘤較好犯在以下那個部位",
+    "falseOptions": ["Distal femur", "Proximal tibia", "Humerus"],
+    "correctOptions": ["Pelvis"],
+    "category": "骨腫瘤",
+    "id": 66,
+    "page_num": 26,
+    "difficulty": "medium"
+  },
+  {
+    "question": "次發性的軟骨肉瘤是由何者轉變而來",
+    "falseOptions": ["Osteoblastoma", "Fibrous dysplasia", "Osteoid osteoma"],
+    "correctOptions": ["Osteochondroma"],
+    "category": "骨腫瘤",
+    "id": 67,
+    "page_num": 26,
+    "difficulty": "medium"
+  },
+  {
+    "question": "最常造成病理性骨折的病因為何",
+    "falseOptions": ["Giant cell tumor", "Fibrous dysplasia", "Multiple myeloma"],
+    "correctOptions": ["Metastatic tumor to bone"],
+    "category": "病理性骨折",
+    "id": 68,
+    "page_num": 27,
+    "difficulty": "medium"
+  },
+  {
+    "question": "對於病理性骨折的病患, 要做哪些處置",
+    "falseOptions": ["Lab exams","Bone survey","Fracture management","Lesion biopsy"],
+    "correctOptions": ["All above"],
+    "category": "病理性骨折",
+    "id": 69,
+    "page_num": 27,
+    "difficulty": "easy"
+  },
+  {
+    "question": "以下何者不是 impending pathologic fracture 的標準",
+    "falseOptions": [">50% destruction of diaphyseal cortex", "Lesion > 2.5 cm in diameter", "Persistent pain following irradiation"],
+    "correctOptions": ["Lesion involving both cortex"],
+    "category": "病理性骨折",
+    "id": 70,
+    "page_num": 27,
+    "difficulty": "hard"
+  },
+  {
+    "question": "用來診斷後跟肌腱斷裂的test 是",
+    "falseOptions": ["Drawer test", "Lachman test", "Apprehension test"],
+    "correctOptions": ["Thompson test"],
+    "category": "肌腱損傷",
+    "id": 71,
+    "page_num": 28,
+    "difficulty": "easy"
+  },
+  {
+    "question": "後跟肌腱斷裂術後通常需石膏固定多久",
+    "falseOptions": ["2週", "3個月", "1個月"],
+    "correctOptions": ["8週"],
+    "category": "肌腱損傷",
+    "id": 72,
+    "page_num": 28,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是後跟肌腱斷裂術後常見的合併症",
+    "falseOptions": ["傷口癒合不良", "傷口感染", "肌鍵再次斷裂"],
+    "correctOptions": ["腳趾頭壞死"],
+    "category": "肌腱損傷",
+    "id": 73,
+    "page_num": 28,
+    "difficulty": "hard"
+  },
+  {
+    "question": "網球肘大部分發生在何處",
+    "falseOptions": ["肘關節下外側", "肘關節下內側", "肘關節上內側"],
+    "correctOptions": ["肘關節上外側"],
+    "category": "運動傷害",
+    "id": 74,
+    "page_num": 29,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何項不是網球肘可能的病理變化",
+    "falseOptions": ["腕伸展肌膜的微血管增生，肉芽組織形成並導致纖維化", "腕伸展肌膜的細胞侵蝕", "肌腱斷裂或退化"],
+    "correctOptions": ["肌腱下層的末梢神經退化"],
+    "category": "運動傷害",
+    "id": 75,
+    "page_num": 29,
+    "difficulty": "hard"
+  },
+  {
+    "question": "網球肘的治療方式不包括",
+    "falseOptions": ["打球後冷敷", "局部注射類固醇", "使用護肘"],
+    "correctOptions": ["訓練伸展肌肌力"],
+    "category": "運動傷害",
+    "id": 76,
+    "page_num": 29,
+    "difficulty": "medium"
+  },
+  {
+    "question": "腳踝扭傷最常見的機轉是甚麼樣的傷害",
+    "falseOptions": ["旋轉性", "過度伸張性", "外翻性"],
+    "correctOptions": ["內翻性"],
+    "category": "腳踝扭傷",
+    "id": 77,
+    "page_num": 30,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何者不是腳踝扭傷的緊急處置",
+    "falseOptions": ["固定", "休息", "壓迫"],
+    "correctOptions": ["熱敷"],
+    "category": "腳踝扭傷",
+    "id": 78,
+    "page_num": 30,
+    "difficulty": "easy"
+  },
+  {
+    "question": "內外踝骨折術後通常多久會治癒",
+    "falseOptions": ["2星期", "1個月", "半年"],
+    "correctOptions": ["2個月"],
+    "category": "踝關節骨折",
+    "id": 79,
+    "page_num": 30,
+    "difficulty": "easy"
+  },
+  {
+    "question": "肩關節脫臼以方向來分最常見的是哪一種",
+    "falseOptions": ["Posterior", "Inferior", "Multidirectional"],
+    "correctOptions": ["Anterior"],
+    "category": "肩關節脫臼",
+    "id": 80,
+    "page_num": 31,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Recurrent shoulder dislocation與甚麼因素最有關係",
+    "falseOptions": ["受傷的次數", "受傷的嚴重程度", "性別"],
+    "correctOptions": ["第一次發生脫臼的年紀"],
+    "category": "肩關節脫臼",
+    "id": 81,
+    "page_num": 31,
+    "difficulty": "medium"
+  },
+  {
+    "question": "哪一個方向的脫位要詳細詢問病人的精神病史",
+    "falseOptions": ["Anterior", "Inferior", "Multidirectional"],
+    "correctOptions": ["Posterior"],
+    "category": "肩關節脫臼",
+    "id": 82,
+    "page_num": 31,
+    "difficulty": "medium"
+  },
+  {
+    "question": "排球選手最常造成肩部的運動傷害是甚麼",
+    "falseOptions": ["Shoulder subluxation", "Impingement syndrome", "Rotator cuff tear"],
+    "correctOptions": ["Suprascapular nerve palsy"],
+    "category": "運動傷害",
+    "id": 83,
+    "page_num": 32,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Suprascapular nerve palsy 的病人外觀上可見病人哪一條 muscle atrophy",
+    "falseOptions": ["Supraspinatus", "Teres minor", "Subscapularis"],
+    "correctOptions": ["Infraspinatus"],
+    "category": "神經損傷",
+    "id": 84,
+    "page_num": 32,
+    "difficulty": "hard"
+  },
+  {
+    "question": "如果懷疑病人是Suprascapular nerve palsy，最適當的進一步檢查是甚麼",
+    "falseOptions": ["MRI", "CT", "NCV"],
+    "correctOptions": ["EMG"],
+    "category": "神經損傷",
+    "id": 85,
+    "page_num": 32,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Lachman test 是用來診斷前十字韌帶受傷的 test，請問要在膝關節甚麼狀態下作此test",
+    "falseOptions": ["完全伸直", "彎曲90度", "盡量彎曲"],
+    "correctOptions": ["彎曲50度"],
+    "category": "膝韌帶損傷",
+    "id": 86,
+    "page_num": 33,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是前十字韌帶斷裂開刀的indication",
+    "falseOptions": ["年輕人", "有associated meniscal tear", "Complete ACL rupture"],
+    "correctOptions": ["有muscle atrophy"],
+    "category": "膝韌帶損傷",
+    "id": 87,
+    "page_num": 33,
+    "difficulty": "medium"
+  },
+  {
+    "question": "前十字韌帶斷裂如需手術，通常建議何時動手術",
+    "falseOptions": ["受傷後馬上", "受傷後兩星期", "受傷半年以上"],
+    "correctOptions": ["受傷五星期後"],
+    "category": "膝韌帶損傷",
+    "id": 88,
+    "page_num": 33,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是診斷膝半月軟骨破裂的診斷工具",
+    "falseOptions": ["關節鏡", "MRI", "超音波"],
+    "correctOptions": ["關節造影"],
+    "category": "半月板損傷",
+    "id": 89,
+    "page_num": 34,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是半月板對膝關節生物力學的貢獻",
+    "falseOptions": ["增加股骨及脛骨的接觸面積", "機動的維持膝關節穩定", "增加關節的潤滑"],
+    "correctOptions": ["增加膝關節活動度"],
+    "category": "半月板損傷",
+    "id": 90,
+    "page_num": 34,
+    "difficulty": "medium"
+  },
+  {
+    "question": "內側半月板破裂常伴隨何種膝關節傷害",
+    "falseOptions": ["後十字韌帶", "外側側韌帶", "內側側韌帶"],
+    "correctOptions": ["前十字韌帶"],
+    "category": "半月板損傷",
+    "id": 91,
+    "page_num": 34,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是解離性骨軟骨炎(Osteochondritis dissicans, OCD)好發處",
+    "falseOptions": ["膝關節", "肘關節", "踝關節"],
+    "correctOptions": ["髖關節"],
+    "category": "骨軟骨病變",
+    "id": 92,
+    "page_num": 35,
+    "difficulty": "medium"
+  },
+  {
+    "question": "解離性骨軟骨炎(OCD)好發於哪個年齡層",
+    "falseOptions": ["50歲左右成年人", "70歲以上老年人", "20~40歲成年人"],
+    "correctOptions": ["5~15歲兒童或青少年"],
+    "category": "骨軟骨病變",
+    "id": 93,
+    "page_num": 35,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是解離性骨軟骨炎(OCD)的治療方式",
+    "falseOptions": ["限制關節活動", "關節鏡移除軟骨碎片、在病灶上鑽洞", "骨軟骨移植手術"],
+    "correctOptions": ["局部打類固醇"],
+    "category": "骨軟骨病變",
+    "id": 94,
+    "page_num": 35,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何者不是成人膝前痛的常見原因",
+    "falseOptions": ["Peripatellar bursitis", "半月板破裂", "髕韌帶發炎"],
+    "correctOptions": ["Osgood-Schlatter’s disease"],
+    "category": "膝前痛",
+    "id": 95,
+    "page_num": 36,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是Osgood-Schlatter’s disease的治療方式",
+    "falseOptions": ["局部冰敷", "消炎藥治療", "護膝固定"],
+    "correctOptions": ["關節鏡手術"],
+    "category": "膝前痛",
+    "id": 96,
+    "page_num": 36,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Osgood-Schlatter’s disease是屬於一種何種構照的發炎",
+    "falseOptions": ["Muscle", "Ligament", "Synovium"],
+    "correctOptions": ["Apophysis"],
+    "category": "膝前痛",
+    "id": 97,
+    "page_num": 36,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Jumper’s knee 是指哪裏的肌腱炎",
+    "falseOptions": ["Quadriceps", "Hamstring", "Popliteal muscle"],
+    "correctOptions": ["Patellar tendon"],
+    "category": "膝前痛",
+    "id": 98,
+    "page_num": 37,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何者不是髕骨週邊肌腱拉傷的典型症狀",
+    "falseOptions": ["膝關節前側有明顯壓痛點", "夜間疼痛", "爬樓梯時症狀加劇"],
+    "correctOptions": ["膝關節不穩定"],
+    "category": "膝前痛",
+    "id": 99,
+    "page_num": 37,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是髕骨週邊肌腱拉傷的治療方式",
+    "falseOptions": ["休息", "冰敷", "消炎藥治療"],
+    "correctOptions": ["局部打類固醇"],
+    "category": "膝前痛",
+    "id": 100,
+    "page_num": 37,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何者不是髕骨軟骨軟化症常見的原因或危險因子",
+    "falseOptions": ["體重過重", "曾發生創傷性脫位", "髕骨排列不正"],
+    "correctOptions": ["抽菸"],
+    "category": "髕骨軟化症",
+    "id": 101,
+    "page_num": 38,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是髕骨軟骨軟化症的治療方式",
+    "falseOptions": ["消炎藥治療", "股四頭肌的強化訓練", "使用護具"],
+    "correctOptions": ["多休息"],
+    "category": "髕骨軟化症",
+    "id": 102,
+    "page_num": 38,
+    "difficulty": "hard"
+  },
+  {
+    "question": "何者不是髕骨軟骨軟化症繼續進展可能產生的後果",
+    "falseOptions": ["骨四頭肌無力", "膝關節無力", "髕骨股骨關節的骨關節炎"],
+    "correctOptions": ["髕骨壞死"],
+    "category": "髕骨軟化症",
+    "id": 103,
+    "page_num": 38,
+    "difficulty": "hard"
+  },
+  {
+    "question": "肩旋轉肌破裂最主要發生在哪一條肌肉",
+    "falseOptions": ["Infraspinatus", "Subscapularis", "Teres minor"],
+    "correctOptions": ["Supraspinatus"],
+    "category": "旋轉肌袖損傷",
+    "id": 104,
+    "page_num": 39,
+    "difficulty": "easy"
+  },
+  {
+    "question": "何者不是肩旋轉肌破裂的典型症狀",
+    "falseOptions": ["Motion pain", "Night pain", "Weakness"],
+    "correctOptions": ["Limited passive ROM"],
+    "category": "旋轉肌袖損傷",
+    "id": 105,
+    "page_num": 39,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何者不是肩旋轉肌破裂的診斷工具",
+    "falseOptions": ["MRI", "Arthrography", "超音波"],
+    "correctOptions": ["CT"],
+    "category": "旋轉肌袖損傷",
+    "id": 106,
+    "page_num": 39,
+    "difficulty": "medium"
+  },
+  {
+    "question": "扭傷是指甚麼組織受到傷害",
+    "falseOptions": ["Muscle", "Capsule", "Tendon"],
+    "correctOptions": ["Ligament"],
+    "category": "軟組織傷害",
+    "id": 107,
+    "page_num": 40,
+    "difficulty": "easy"
+  },
+  {
+    "question": "扭傷與拉傷在急性期的處理原則不包括",
+    "falseOptions": ["Rest", "Compression", "Elevation"],
+    "correctOptions": ["Hot-packing"],
+    "category": "軟組織傷害",
+    "id": 108,
+    "page_num": 40,
+    "difficulty": "easy"
+  },
+  {
+    "question": "扭傷與拉傷在過了急性期之後除了固定、休息之外可以以何種方式幫助組織修復",
+    "falseOptions": ["冰敷", "推拿", "針灸"],
+    "correctOptions": ["熱敷"],
+    "category": "軟組織傷害",
+    "id": 109,
+    "page_num": 40,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者為Ankylosing Spondylitis病人常見血清學檢查",
+    "falseOptions": ["Rheumatoid factor: positive; HLA- B27 positive", "Rheumatoid factor: positive; HLA- B27 negative", "Rheumatoid factor: negative; HLA- B27 negative"],
+    "correctOptions": ["Rheumatoid factor: negative; HLA- B27 positive"],
+    "category": "僵直性脊椎炎",
+    "id": 110,
+    "page_num": 41,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Ankylosing Spondylitis病人主要治療方法為",
+    "falseOptions": ["手術治療", "化學治療", "基因治療"],
+    "correctOptions": ["藥物治療及復健"],
+    "category": "僵直性脊椎炎",
+    "id": 111,
+    "page_num": 41,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Ankylosing Spondylitis病人除脊椎受影響外還常見何處關節的病變",
+    "falseOptions": ["腕關節", "肘關節", "膝關節"],
+    "correctOptions": ["髖關節"],
+    "category": "僵直性脊椎炎",
+    "id": 112,
+    "page_num": 41,
+    "difficulty": "medium"
+  },
+  {
+    "question": "在 lumbar stenosis 形成的機制中何者最早發生",
+    "falseOptions": ["骨刺形成", "黃韌帶增厚", "椎管狹窄"],
+    "correctOptions": ["椎間盤退化"],
+    "category": "腰椎狹窄",
+    "id": 113,
+    "page_num": 42,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者非neurogenic claudication的特性",
+    "falseOptions": ["背伸直加重症狀", "走下坡加重症狀", "走路加重症狀"],
+    "correctOptions": ["坐姿加重症狀"],
+    "category": "腰椎狹窄",
+    "id": 114,
+    "page_num": 42,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Lumbar stenosis的病人在何種情形下需緊急手術",
+    "falseOptions": ["下肢麻痛", "下肢無力", "膝反射減弱"],
+    "correctOptions": ["馬尾症候群"],
+    "category": "腰椎狹窄",
+    "id": 115,
+    "page_num": 42,
+    "difficulty": "easy"
+  },
+  {
+    "question": "在HIVD的理學檢查中何者不是tension sign 的一種",
+    "falseOptions": ["Straight leg raising test", "Bowstring test", "Cross leg raising test"],
+    "correctOptions": ["Babinski sign"],
+    "category": "椎間盤突出",
+    "id": 116,
+    "page_num": 43,
+    "difficulty": "medium"
+  },
+  {
+    "question": "腰椎間盤突出最常發生於",
+    "falseOptions": ["L1-2", "L2-3", "L3-4"],
+    "correctOptions": ["L4-5"],
+    "category": "椎間盤突出",
+    "id": 117,
+    "page_num": 43,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者非HIVD開刀的適應症",
+    "falseOptions": ["馬尾症候群", "進行性下肢無力", "保守治療六週失敗"],
+    "correctOptions": ["劇烈疼痛"],
+    "category": "椎間盤突出",
+    "id": 118,
+    "page_num": 43,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者有可能造成Compression fracture",
+    "falseOptions": ["Osteoporosis","Metastasis","Multiple myeloma"],
+    "correctOptions": ["都有可能"],
+    "category": "壓迫性骨折",
+    "id": 119,
+    "page_num": 44,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Compression fracture 主要是影響脊椎體的",
+    "falseOptions": ["中部", "後部", "全部"],
+    "correctOptions": ["前部"],
+    "category": "壓迫性骨折",
+    "id": 120,
+    "page_num": 44,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者是造成compression fracture 最常見的原因",
+    "falseOptions": ["Metastasis", "Multiple myeloma", "Tuberculosis"],
+    "correctOptions": ["Osteoporosis"],
+    "category": "壓迫性骨折",
+    "id": 121,
+    "page_num": 44,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Scoliosis 的定義是Cobb’s angle 大於幾度",
+    "falseOptions": ["20", "30", "40"],
+    "correctOptions": ["10"],
+    "category": "脊柱側彎",
+    "id": 122,
+    "page_num": 45,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Scoliosis 最常見的種類是",
+    "falseOptions": ["Congenital scoliosis", "Traumatic scoliosis", "Neuromuscular scoliosis"],
+    "correctOptions": ["Idiopathic scoliosis"],
+    "category": "脊柱側彎",
+    "id": 123,
+    "page_num": 45,
+    "difficulty": "easy"
+  },
+  {
+    "question": "Adolescent idiopathic scoliosis幾度以下可觀察",
+    "falseOptions": ["10", "30", "40"],
+    "correctOptions": ["20"],
+    "category": "脊柱側彎",
+    "id": 124,
+    "page_num": 45,
+    "difficulty": "medium"
+  },
+  {
+    "question": "控制diaphragm的motor level是在",
+    "falseOptions": ["C2-3", "C4-5", "C5-6"],
+    "correctOptions": ["C3-4"],
+    "category": "脊髓損傷",
+    "id": 125,
+    "page_num": 46,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Umbilicus 的sensory level 約在",
+    "falseOptions": ["T7", "T8", "T9"],
+    "correctOptions": ["T10"],
+    "category": "脊髓損傷",
+    "id": 126,
+    "page_num": 46,
+    "difficulty": "medium"
+  },
+  {
+    "question": "目前對脊椎損傷最有效的藥物為",
+    "falseOptions": ["Dexamethasone", "Prednisolone", "Mannitol"],
+    "correctOptions": ["Methylprednisolone"],
+    "category": "脊髓損傷",
+    "id": 127,
+    "page_num": 46,
+    "difficulty": "medium"
+  },
+  {
+    "question": "最常見發生脊椎轉移的癌症是",
+    "falseOptions": ["肺癌", "骨癌", "肝癌"],
+    "correctOptions": ["乳癌"],
+    "category": "脊椎轉移",
+    "id": 128,
+    "page_num": 47,
+    "difficulty": "hard"
+  },
+  {
+    "question": "何項檢查最能評估脊椎轉移的癌造成脊椎管壓迫的程度",
+    "falseOptions": ["Plain film", "Bone scan", "CT"],
+    "correctOptions": ["MRI"],
+    "category": "脊椎轉移",
+    "id": 129,
+    "page_num": 47,
+    "difficulty": "easy"
+  },
+  {
+    "question": "一般考慮spine metastasis的病人手術時，病人的life expectancy需幾個月以上",
+    "falseOptions": ["1", "2", "4"],
+    "correctOptions": ["3"],
+    "category": "脊椎轉移",
+    "id": 130,
+    "page_num": 47,
+    "difficulty": "medium"
+  },
+  {
+    "question": "一般pyogenic spine infection最常見的菌種為",
+    "falseOptions": ["Streptococci", "Pseudomonas", "Tuberculosis"],
+    "correctOptions": ["Staphylococcus"],
+    "category": "脊椎感染",
+    "id": 131,
+    "page_num": 48,
+    "difficulty": "easy"
+  },
+  {
+    "question": "TB的spine infection最常發生於",
+    "falseOptions": ["頸椎", "腰椎", "薦椎"],
+    "correctOptions": ["胸椎"],
+    "category": "脊椎感染",
+    "id": 132,
+    "page_num": 48,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者非spine infection的 surgical indication",
+    "falseOptions": ["Spinal cord compression", "Significant deformity", "Refractory to non-operative treatment"],
+    "correctOptions": ["Multiple level"],
+    "category": "脊椎感染",
+    "id": 133,
+    "page_num": 48,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Thumb及index的sensory dermatome 是",
+    "falseOptions": ["C5", "C7", "C8"],
+    "correctOptions": ["C6"],
+    "category": "神經學",
+    "id": 134,
+    "page_num": 49,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者為上肢的pathological reflex",
+    "falseOptions": ["Biceps reflex", "Triceps reflex", "Babinski sign"],
+    "correctOptions": ["Hoffman sign"],
+    "category": "神經學",
+    "id": 135,
+    "page_num": 49,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Wrist extensor 主要是哪一個nerve root 支配",
+    "falseOptions": ["C5", "C7", "C8"],
+    "correctOptions": ["C6"],
+    "category": "神經學",
+    "id": 136,
+    "page_num": 49,
+    "difficulty": "medium"
+  },
+  {
+    "question": "先天杵狀足之最佳治療時機為何",
+    "falseOptions": ["一個月大", "學走路前", "上學前"],
+    "correctOptions": ["出生後立刻"],
+    "category": "小兒骨科",
+    "id": 137,
+    "page_num": 50,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者不是先天杵狀足之治療方式",
+    "falseOptions": ["徒手矯正", "徒手矯正加石膏固定（casting）", "手術治療"],
+    "correctOptions": ["徒手矯正加支架固定（splinting）"],
+    "category": "小兒骨科",
+    "id": 138,
+    "page_num": 50,
+    "difficulty": "hard"
+  },
+  {
+    "question": "先天杵狀足的X光檢查主要的測量角度為何",
+    "falseOptions": ["第一蹠骨與跟骨長軸的交角", "第一蹠骨與距骨長軸的交角", "脛骨與第一蹠骨的交角"],
+    "correctOptions": ["距骨與跟骨長軸的交角"],
+    "category": "小兒骨科",
+    "id": 139,
+    "page_num": 50,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者不是Transient Synovitis of Hip之臨床表現",
+    "falseOptions": ["急性疼痛", "跛行", "關節活動受限"],
+    "correctOptions": ["發高燒"],
+    "category": "小兒髖關節",
+    "id": 140,
+    "page_num": 51,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何種疾病之X光無異常變化",
+    "falseOptions": ["Septic arthritis", "Perthes’ disease", "Osteomyelitis"],
+    "correctOptions": ["Transient Synovitis of Hip"],
+    "category": "小兒髖關節",
+    "id": 141,
+    "page_num": 51,
+    "difficulty": "medium"
+  },
+  {
+    "question": "懷疑病人為Transient Synovitis of Hip時，下列何者不是必要檢查",
+    "falseOptions": ["CBC （Complete blood count 血球計數）", "CRP（C-reactive protein C-型反應蛋白）", "X光"],
+    "correctOptions": ["Bone scan"],
+    "category": "小兒髖關節",
+    "id": 142,
+    "page_num": 51,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者理學檢查不是使用於診斷DDH（Developmental Dysplasia of the Hip）",
+    "falseOptions": ["Allis sign", "Ortolani test", "Barlow test"],
+    "correctOptions": ["Patrick test"],
+    "category": "小兒髖關節",
+    "id": 143,
+    "page_num": 52,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者非為DDH常見合併的骨科異常",
+    "falseOptions": ["斜頸", "蹠骨內翻", "杵狀足"],
+    "correctOptions": ["多指症"],
+    "category": "小兒髖關節",
+    "id": 144,
+    "page_num": 52,
+    "difficulty": "hard"
+  },
+  {
+    "question": "何種年齡的病人適合以開放復位術合併骨盆截骨術來治療DDH",
+    "falseOptions": ["6個月內", "6-8個月", "2-3歲"],
+    "correctOptions": ["18-24 個月"],
+    "category": "小兒髖關節",
+    "id": 145,
+    "page_num": 52,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Perthes 症的鑑別診斷，下列何者為非",
+    "falseOptions": ["Tuberculosis", "Epiphyseal hypoplasia", "Hypothyroidism"],
+    "correctOptions": ["Transient Synovitis"],
+    "category": "Perthes病",
+    "id": 146,
+    "page_num": 53,
+    "difficulty": "medium"
+  },
+  {
+    "question": "小朋友的原發性股骨頭缺血性壞死，不是由下列哪位於1909年發現的",
+    "falseOptions": ["Arthur Legg", "Jacques Calvé", "Georg Perthes"],
+    "correctOptions": ["Austin Moore"],
+    "category": "Perthes病",
+    "id": 147,
+    "page_num": 53,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Perthes 症若X光看到股骨頭軟化及變形分裂，是為何種病程發展",
+    "falseOptions": ["初期", "癒合期", "殘留期"],
+    "correctOptions": ["片斷期"],
+    "category": "Perthes病",
+    "id": 148,
+    "page_num": 53,
+    "difficulty": "medium"
+  },
+  {
+    "question": "肱骨髁上骨折可分兩種類型，所佔百分比，何者為是",
+    "falseOptions": ["伸展型 5-10%", "屈曲型 90-95%", "屈曲型 70-75%"],
+    "correctOptions": ["伸展型 90-95%"],
+    "category": "兒童骨折",
+    "id": 149,
+    "page_num": 54,
+    "difficulty": "medium"
+  },
+  {
+    "question": "兒童的伸展型肱骨髁上骨折常易傷及何條神經",
+    "falseOptions": ["尺神經", "肌皮神經", "正中神經"],
+    "correctOptions": ["橈神經"],
+    "category": "兒童骨折",
+    "id": 150,
+    "page_num": 54,
+    "difficulty": "easy"
+  },
+  {
+    "question": "兒童的伸展型肱骨髁上骨折主要的合併症有",
+    "falseOptions": ["神經傷害","血管傷害","腔室症候群"],
+    "correctOptions": ["以上皆是"],
+    "category": "兒童骨折",
+    "id": 151,
+    "page_num": 54,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者不是腦性麻痺常見型態",
+    "falseOptions": ["Hemiplegia", "Paraplegia", "Diplegia"],
+    "correctOptions": ["Monoplegia"],
+    "category": "腦性麻痺",
+    "id": 152,
+    "page_num": 55,
+    "difficulty": "medium"
+  },
+  {
+    "question": "腦性麻痺病人不會走路的預後因素為何",
+    "falseOptions": ["Neck righting reflex 持續存在","Tonic neck reflex 持續存在","Moro’s reflex 持續存在"],
+    "correctOptions": ["以上皆是"],
+    "category": "腦性麻痺",
+    "id": 153,
+    "page_num": 55,
+    "difficulty": "hard"
+  },
+  {
+    "question": "有關腦性麻痺病人膝關節屈曲攣縮的檢查，下列何者為非",
+    "falseOptions": ["髖關節屈曲90度", "儘量伸直膝關節", "主要是因hamstring muscle攣縮所造成"],
+    "correctOptions": ["測量股骨與脛骨的交角，即是popliteal angle"],
+    "category": "腦性麻痺",
+    "id": 154,
+    "page_num": 55,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Waddell’s triad不包括下列何項",
+    "falseOptions": ["股骨骨折", "頭部外傷", "胸腔外傷"],
+    "correctOptions": ["腹腔外傷"],
+    "category": "兒童創傷",
+    "id": 155,
+    "page_num": 56,
+    "difficulty": "medium"
+  },
+  {
+    "question": "兒童股骨骨折，最常見的併發症為何",
+    "falseOptions": ["骨質疏鬆", "髖關節攣縮", "癒合不良"],
+    "correctOptions": ["長短腳"],
+    "category": "兒童骨折",
+    "id": 156,
+    "page_num": 56,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者非兒童股骨骨折需手術治療的適應症",
+    "falseOptions": ["開放性骨折", "多處骨折", "合併神經血管傷害"],
+    "correctOptions": ["粉碎性骨折"],
+    "category": "兒童骨折",
+    "id": 157,
+    "page_num": 56,
+    "difficulty": "hard"
+  },
+  {
+    "question": "有關生長痛，下列何者為非",
+    "falseOptions": ["成因不明朗", "發作部位不固定", "下肢比上肢常見"],
+    "correctOptions": ["常發生於白天"],
+    "category": "生長痛",
+    "id": 158,
+    "page_num": 57,
+    "difficulty": "easy"
+  },
+  {
+    "question": "有關生長痛，下列何者為非",
+    "falseOptions": ["沒有固定患處", "小朋友可能痛到哭醒", "發作時間不長，多小於30分鐘"],
+    "correctOptions": ["局部有紅腫熱痛"],
+    "category": "生長痛",
+    "id": 159,
+    "page_num": 57,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列症狀何者不是生長痛的表現",
+    "falseOptions": ["只限於一腿","白天也痛","外觀有紅腫熱之變化"],
+    "correctOptions": ["以上皆非"],
+    "category": "生長痛",
+    "id": 160,
+    "page_num": 57,
+    "difficulty": "medium"
+  },
+  {
+    "question": "長短腳併發症有哪些",
+    "falseOptions": ["跛行","脊柱側彎","容易疲乏"],
+    "correctOptions": ["以上皆是"],
+    "category": "肢體不等長",
+    "id": 161,
+    "page_num": 58,
+    "difficulty": "easy"
+  },
+  {
+    "question": "長短腳的成因為何",
+    "falseOptions": ["生長板損傷","Developmental Dysplasia of Hip (DDH)","小兒股骨骨折"],
+    "correctOptions": ["以上皆是"],
+    "category": "肢體不等長",
+    "id": 162,
+    "page_num": 58,
+    "difficulty": "easy"
+  },
+  {
+    "question": "長短腳的治療方式何者為非",
+    "falseOptions": ["成人或長大後腿長差距小於2公分者，可不需治療", "腿長差距略大於2公分者，可使用鞋墊墊高短腳即可", "將長腿切短（成人）或延緩其生長（小孩）"],
+    "correctOptions": ["兩腿差距大於四公分者，需實施肢體延長手術以避免脊柱側彎"],
+    "category": "肢體不等長",
+    "id": 163,
+    "page_num": 58,
+    "difficulty": "hard"
+  },
+  {
+    "question": "肢體延長術常見併發症為何",
+    "falseOptions": ["釘口感染","關節攣縮","神經血管的傷害"],
+    "correctOptions": ["以上皆是"],
+    "category": "肢體延長",
+    "id": 164,
+    "page_num": 59,
+    "difficulty": "easy"
+  },
+  {
+    "question": "肢體延長術之適應症為何",
+    "falseOptions": ["DDH 病患短肢延長","小兒麻痺病患下肢延長","身材不對稱之侏儒症患者"],
+    "correctOptions": ["以上皆是"],
+    "category": "肢體延長",
+    "id": 165,
+    "page_num": 59,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者為非",
+    "falseOptions": ["骨痂延長術最早為蘇聯人Ilizarov 所創", "若大小腿均有短縮時，可同時在大小腿作延長術", "可合併外固定器及骨髓內釘以縮短外固定器的穿戴時間"],
+    "correctOptions": ["使用於矮個子可使其「長高」，且正常生理之肌肉骨骼較耐拉，併發症及後遺症均少見"],
+    "category": "肢體延長",
+    "id": 166,
+    "page_num": 59,
+    "difficulty": "hard"
+  },
+  {
+    "question": "良性腫瘤的特徵，下列何者為非",
+    "falseOptions": ["腫瘤週邊有硬化周緣", "沒有侵犯軟組織", "骨膜反應堅實"],
+    "correctOptions": ["可見洋蔥狀骨膜反應"],
+    "category": "骨腫瘤",
+    "id": 167,
+    "page_num": 60,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何時需進行良性骨腫瘤之切除術",
+    "falseOptions": ["腫瘤大小影響外觀","造成疼痛","懷疑有惡性變化"],
+    "correctOptions": ["以上皆是"],
+    "category": "骨腫瘤",
+    "id": 168,
+    "page_num": 60,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何種良性腫瘤較不可能生惡性變化",
+    "falseOptions": ["Osteochondroma", "Enchondroma", "Chondroblastoma"],
+    "correctOptions": ["Osteoid osteoma"],
+    "category": "骨腫瘤",
+    "id": 169,
+    "page_num": 60,
+    "difficulty": "hard"
+  },
+  {
+    "question": "生長板傷害可有哪些後遺症",
+    "falseOptions": ["以上皆非","肢體縮短","肢體彎曲"],
+    "correctOptions": ["以上皆是"],
+    "category": "生長板損傷",
+    "id": 170,
+    "page_num": 61,
+    "difficulty": "easy"
+  },
+  {
+    "question": "生長傷害之分類型態最常使用Salter-Harris 分類法，其中最常見的是",
+    "falseOptions": ["Type I", "Type III", "Type IV"],
+    "correctOptions": ["Type II"],
+    "category": "生長板損傷",
+    "id": 171,
+    "page_num": 61,
+    "difficulty": "easy"
+  },
+  {
+    "question": "以下何者為非",
+    "falseOptions": ["傷及生長板之骨折通常需手術予以復位及骨定", "發生生長板傷害之年齡愈小，後遺症愈厲害", "生長板傷害面積太寬時，可將剩下之健康生長板予以停頓，再考慮實行矯正手術"],
+    "correctOptions": ["生長板傷害面積在一半以下時，應將受傷之生長板儘量保留，以避免肢體變形"],
+    "category": "生長板損傷",
+    "id": 172,
+    "page_num": 61,
+    "difficulty": "hard"
+  },
+  {
+    "question": "以下何者為正中神經壓迫症候群的理學檢查",
+    "falseOptions": ["Finkelstein test", "O’brian test", "Hawkin test"],
+    "correctOptions": ["Phalen’s test"],
+    "category": "手部神經壓迫",
+    "id": 173,
+    "page_num": 62,
+    "difficulty": "medium"
+  },
+  {
+    "question": "正中神經壓迫症候群是因哪個構造壓到正中神經所致",
+    "falseOptions": ["A1 pulley", "A3 pulley", "Flexor retinaculum"],
+    "correctOptions": ["Transverse carpal ligament"],
+    "category": "手部神經壓迫",
+    "id": 174,
+    "page_num": 62,
+    "difficulty": "medium"
+  },
+  {
+    "question": "何種運動最容易導致Guyon’s canal 神經壓迫症候群",
+    "falseOptions": ["Tennis", "Volleyball", "Basketball"],
+    "correctOptions": ["Bicycling"],
+    "category": "手部神經壓迫",
+    "id": 175,
+    "page_num": 62,
+    "difficulty": "hard"
+  },
+  {
+    "question": "手依解剖學分類為五個區域(Zone), 請問何區為No Man’s Land",
+    "falseOptions": ["Zone Ⅰ", "Zone Ⅲ", "Zone Ⅳ", "Zone Ⅴ"],
+    "correctOptions": ["Zone Ⅱ"],
+    "category": "手部解剖",
+    "id": 176,
+    "page_num": 63,
+    "difficulty": "medium"
+  },
+  {
+    "question": "手指屈腱斷裂縫合後復健應採用何種方式",
+    "falseOptions": ["Passive extension", "Passive flexion", "Passive extension & active flexion"],
+    "correctOptions": ["Passive flexion & active extension"],
+    "category": "肌腱修復",
+    "id": 177,
+    "page_num": 63,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何種疾病是因FPL（Flexor pollicis longus）被 Scaphoid osteophyte 磨損而斷裂",
+    "falseOptions": ["Mallet finger", "Bowler’s thumb", "Jersey finger"],
+    "correctOptions": ["Mannerfelt lesion"],
+    "category": "肌腱損傷",
+    "id": 178,
+    "page_num": 63,
+    "difficulty": "hard"
+  },
+  {
+    "question": "肢體重接術中，對缺氧時間之忍耐度最低者為何",
+    "falseOptions": ["皮膚", "周圍神經", "肌腱"],
+    "correctOptions": ["肌肉"],
+    "category": "斷肢再植",
+    "id": 179,
+    "page_num": 64,
+    "difficulty": "medium"
+  },
+  {
+    "question": "斷指再接術的適應症，下列何者不是",
+    "falseOptions": ["拇指截斷", "多指截斷", "小孩斷指"],
+    "correctOptions": ["壓碎傷"],
+    "category": "斷肢再植",
+    "id": 180,
+    "page_num": 64,
+    "difficulty": "medium"
+  },
+  {
+    "question": "斷指重接後若指溫低於幾度, 需緊急打開探查",
+    "falseOptions": ["32°C", "28°C", "34°C"],
+    "correctOptions": ["30°C"],
+    "category": "斷肢再植",
+    "id": 181,
+    "page_num": 64,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列以下何者不是femoral head avascular necrosis的原因",
+    "falseOptions": ["Alcoholism", "Long term steroid used", "Sickle cell anemia"],
+    "correctOptions": ["Chronic Obstructive Pulmonary Disease"],
+    "category": "股骨頭壞死",
+    "id": 182,
+    "page_num": 65,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Ficat stage III 的X-ray 特色為何",
+    "falseOptions": ["Femoral head collapse", "Subchondral cyst", "Osteophyte"],
+    "correctOptions": ["Crescent sign"],
+    "category": "股骨頭壞死",
+    "id": 183,
+    "page_num": 65,
+    "difficulty": "hard"
+  },
+  {
+    "question": "小孩子的femoral head avascular necrosis稱為",
+    "falseOptions": ["SCFE（Slipped Capital Femoral Epiphysis）", "DDH（Developmental Dysplasia of the Hip）", "Septic arthritis"],
+    "correctOptions": ["LCPD（Legg - Calvé - Perthes’ Disease）"],
+    "category": "股骨頭壞死",
+    "id": 184,
+    "page_num": 65,
+    "difficulty": "medium"
+  },
+  {
+    "question": "月狀骨缺血性壞死又叫作什麼病",
+    "falseOptions": ["Preiser’s disease", "de Quervain’s disease", "Freiberg disease"],
+    "correctOptions": ["Kienbock disease"],
+    "category": "腕部壞死",
+    "id": 185,
+    "page_num": 66,
+    "difficulty": "medium"
+  },
+  {
+    "question": "X-ray看到月狀骨fragmentation, 但外形仍完整, 是為何stage",
+    "falseOptions": ["I", "III", "IV"],
+    "correctOptions": ["II"],
+    "category": "腕部壞死",
+    "id": 186,
+    "page_num": 66,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者不是治療月狀骨缺血性壞死的方式",
+    "falseOptions": ["vascularized bone graft", "radial shortening", "interpositional arthroplasty"],
+    "correctOptions": ["Four corner fusion"],
+    "category": "腕部壞死",
+    "id": 187,
+    "page_num": 66,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者不是全人工肘關節置換的適應症",
+    "falseOptions": ["Rheumatoid arthritis", "Post-traumatic osteoarthritis", "Distal humeral fracture nonunion"],
+    "correctOptions": ["Radial head comminuted fracture"],
+    "category": "肘關節置換",
+    "id": 188,
+    "page_num": 67,
+    "difficulty": "hard"
+  },
+  {
+    "question": "類風溼性關節炎哪一抽血檢查不會高",
+    "falseOptions": ["CRP", "ESR", "RA factor"],
+    "correctOptions": ["HLA-B27"],
+    "category": "類風濕性關節炎",
+    "id": 189,
+    "page_num": 67,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者不是全人工肘關節置換可能的併發症",
+    "falseOptions": ["Fracture", "Ulnar nerve neuropathy", "Triceps tendon rupture"],
+    "correctOptions": ["Biceps tendon rupture"],
+    "category": "肘關節置換",
+    "id": 190,
+    "page_num": 67,
+    "difficulty": "hard"
+  },
+  {
+    "question": "拇指由第一掌指骨中段以下缺損稱為",
+    "falseOptions": ["Total loss", "Proximal subtotal loss", "Pulp loss"],
+    "correctOptions": ["Distal subtotal loss"],
+    "category": "拇指重建",
+    "id": 191,
+    "page_num": 68,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者不是拇指重接術可使用的方法",
+    "falseOptions": ["Toe to hand", "Pollicization", "Wrap around"],
+    "correctOptions": ["Abbe flap"],
+    "category": "拇指重建",
+    "id": 192,
+    "page_num": 68,
+    "difficulty": "hard"
+  },
+  {
+    "question": "目前公認對thumb distal subtotal loss 治療的最佳方法為何",
+    "falseOptions": ["Abbe flap", "Toe to hand", "Pollicization"],
+    "correctOptions": ["Wrap around"],
+    "category": "拇指重建",
+    "id": 193,
+    "page_num": 68,
+    "difficulty": "hard"
+  },
+  {
+    "question": "肱骨哪個位置骨折易導致radial nerve palsy",
+    "falseOptions": ["Middle third", "Proximal third", "Distal intraarticular"],
+    "correctOptions": ["Distal third"],
+    "category": "神經損傷",
+    "id": 194,
+    "page_num": 69,
+    "difficulty": "medium"
+  },
+  {
+    "question": "一般認為橈神經麻痺後多久若仍未恢復需接受肌腱轉移手術",
+    "falseOptions": ["半年", "2年", "3年"],
+    "correctOptions": ["1年"],
+    "category": "神經損傷",
+    "id": 195,
+    "page_num": 69,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者不是橈神經支配的肌肉",
+    "falseOptions": ["Triceps", "EPL（Extensor Pollicis Longus）", "EIP（Extensor Indicis Proprius）"],
+    "correctOptions": ["Brachialis"],
+    "category": "神經損傷",
+    "id": 196,
+    "page_num": 69,
+    "difficulty": "hard"
+  },
+  {
+    "question": "最常見的舟狀骨骨折(Scaphoid fracture)是在哪一個部位",
+    "falseOptions": ["Tubercle", "Proximal pole", "Dorsal sulcus"],
+    "correctOptions": ["Waist"],
+    "category": "腕部骨折",
+    "id": 197,
+    "page_num": 70,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何種舟狀骨骨折(Scaphoid fracture)易造成駝背式變形(humpback deformity)",
+    "falseOptions": ["Tubercle", "Proximal pole", "Waist"],
+    "correctOptions": ["Dorsal sulcus"],
+    "category": "腕部骨折",
+    "id": 198,
+    "page_num": 70,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Transscaphoid perilunate fracture dislocation易壓到哪一條神經",
+    "falseOptions": ["Ulnar nerve", "Radial nerve", "Posterior interosseous nerve"],
+    "correctOptions": ["Median nerve"],
+    "category": "腕部骨折",
+    "id": 199,
+    "page_num": 70,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者不是basal joint 附近的疾病",
+    "falseOptions": ["Thumb metacarpal base joint osteoarthritis", "Rolando’s fracture", "Bennett’s fracture"],
+    "correctOptions": ["Gamekeeper’s thumb"],
+    "category": "拇指基底關節",
+    "id": 200,
+    "page_num": 71,
+    "difficulty": "hard"
+  },
+  {
+    "question": "Bennett’s fracture 的骨折小斷片是被何構造拉住",
+    "falseOptions": ["Abductor pollicis longus", "A1 pulley", "Adductor pollicis"],
+    "correctOptions": ["Palmar beak ligament"],
+    "category": "拇指基底關節",
+    "id": 201,
+    "page_num": 71,
+    "difficulty": "hard"
+  },
+  {
+    "question": "請問 basal joint 為何種joint",
+    "falseOptions": ["Ball & socket joint", "Condyloid joint", "Fibrous joint"],
+    "correctOptions": ["Saddle joint"],
+    "category": "拇指基底關節",
+    "id": 202,
+    "page_num": 71,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者不是皮瓣移植應用於踝關節時可使用來anastomosis 的血管",
+    "falseOptions": ["Anterior tibial artery", "Peroneal artery", "Posterior tibial artery"],
+    "correctOptions": ["Anterior tibial recurrent artery"],
+    "category": "踝關節重建",
+    "id": 203,
+    "page_num": 72,
+    "difficulty": "hard"
+  },
+  {
+    "question": "踝關節複雜開放性骨折若傷口大於10cm, 傷口皮瓣可完全蓋覆住傷口, 且無影響到神經血管者, 是為Gustilo 分類中的哪一個type",
+    "falseOptions": ["Open type I", "Open type II", "Open type IIIB"],
+    "correctOptions": ["Open type IIIA"],
+    "category": "開放性骨折",
+    "id": 204,
+    "page_num": 72,
+    "difficulty": "medium"
+  },
+  {
+    "question": "在急診室遇到複雜開放性骨折且可能需重接血管時，下列何者是不能處置的",
+    "falseOptions": ["清洗傷口", "做細菌培養", "石膏暫時固定"],
+    "correctOptions": ["夾住噴血的血管"],
+    "category": "開放性骨折",
+    "id": 205,
+    "page_num": 72,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Suppurative flexor tenosynovitis 的特色有4個sign, 請問叫作什麼sign",
+    "falseOptions": ["Zarin", "Bishop", "Tsuge"],
+    "correctOptions": ["Kanavel"],
+    "category": "手部感染",
+    "id": 206,
+    "page_num": 73,
+    "difficulty": "medium"
+  },
+  {
+    "question": "下列何者不是此4個sign",
+    "falseOptions": ["Fusiform swelling", "Passive extended pain", "Tenderness along tendon sheath"],
+    "correctOptions": ["Extended digit"],
+    "category": "手部感染",
+    "id": 207,
+    "page_num": 73,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者不是治療Suppurative flexor tenosynovitis的方式",
+    "falseOptions": ["抗生素治療", "清創手術", "放置引流管"],
+    "correctOptions": ["切開pulley以引流膿液"],
+    "category": "手部感染",
+    "id": 208,
+    "page_num": 73,
+    "difficulty": "hard"
+  },
+  {
+    "question": "下列何者非足踝外側韌帶",
+    "falseOptions": ["Anterior talofibular ligament", "Calcaneo – fibular ligament", "Posterior talofibular ligament"],
+    "correctOptions": ["Deltoid ligament"],
+    "category": "踝關節韌帶",
+    "id": 209,
+    "page_num": 74,
+    "difficulty": "easy"
+  },
+  {
+    "question": "足踝扭傷時，最常 injury的部位為",
+    "falseOptions": ["足踝內側韌帶", "足踝內踝", "足踝外踝"],
+    "correctOptions": ["足踝外側韌帶"],
+    "category": "踝關節扭傷",
+    "id": 210,
+    "page_num": 74,
+    "difficulty": "easy"
+  },
+  {
+    "question": "腳踝扭傷之急性期的處理原則為",
+    "falseOptions": ["Rest & Ice packing","Compression & Elevation","Protection"],
+    "correctOptions": ["以上皆是"],
+    "category": "踝關節扭傷",
+    "id": 211,
+    "page_num": 74,
+    "difficulty": "easy"
+  },
+  {
+    "question": "下列何者非糖尿病患常見併發症",
+    "falseOptions": ["潰瘍", "缺血性疼痛", "足部變形"],
+    "correctOptions": ["毛髮增生"],
+    "category": "糖尿病足",
+    "id": 212,
+    "page_num": 75,
+    "difficulty": "medium"
+  },
+  {
+    "question": "在 Wagner classification對糖尿病足分類中，若潰瘍深及皮下組織包括肌腱、關節膜則為",
+    "falseOptions": ["Grade 0", "Grade 1", "Grade 3"],
+    "correctOptions": ["Grade 2"],
+    "category": "糖尿病足",
+    "id": 213,
+    "page_num": 75,
+    "difficulty": "hard"
+  },
+  {
+    "question": "DM foot 何時需儘速手術治療",
+    "falseOptions": ["Intractable ischemic pain", "Wagner stage 3-5", "Ankle – Brachial Index < 0.6"],
+    "correctOptions": ["Impending sepsis"],
+    "category": "糖尿病足",
+    "id": 214,
+    "page_num": 75,
+    "difficulty": "medium"
+  },
+  {
+    "question": "有關拇趾外翻及痛風之鑑別診斷，何者為非",
+    "falseOptions": ["痛風整個 1st MTP會紅腫熱痛", "Bunion症狀局限於1st metatarsus外側", "Uric acid是鑑別診斷的重要參考"],
+    "correctOptions": ["痛風以女性居多"],
+    "category": "足部疾病",
+    "id": 215,
+    "page_num": 76,
+    "difficulty": "medium"
+  },
+  {
+    "question": "拇趾外翻常見合併症為",
+    "falseOptions": ["Dorsal bunion","Overlying 2nd toe","Plantar metatarsalgia of 2nd MT"],
+    "correctOptions": ["以上皆是"],
+    "category": "拇趾外翻",
+    "id": 216,
+    "page_num": 76,
+    "difficulty": "medium"
+  },
+  {
+    "question": "有關拇趾外翻的敘述何者為非",
+    "falseOptions": ["保守療法以鞋具改善最重要", "若疼痛無法解除可考慮手術治療", "避免穿高跟鞋或尖頭鞋"],
+    "correctOptions": ["運動員及舞者最好要開刀治療"],
+    "category": "拇趾外翻",
+    "id": 217,
+    "page_num": 76,
+    "difficulty": "medium"
+  },
+  {
+    "question": "有關截肢之適應症包括",
+    "falseOptions": ["末梢血管疾病","嚴重外傷","無法控制之感染"],
+    "correctOptions": ["以上皆是"],
+    "category": "截肢",
+    "id": 218,
+    "page_num": 77,
+    "difficulty": "easy"
+  },
+  {
+    "question": "以下何者為非截肢術後常見的併發症",
+    "falseOptions": ["Hematoma", "Phantom sensation", "Infection"],
+    "correctOptions": ["Vascular injury"],
+    "category": "截肢",
+    "id": 219,
+    "page_num": 77,
+    "difficulty": "hard"
+  },
+  {
+    "question": "有助於截肢部位選擇的檢查為",
+    "falseOptions": ["X-ray", "CT", "MRI"],
+    "correctOptions": ["Skin temperature & doppler assessment"],
+    "category": "截肢",
+    "id": 220,
+    "page_num": 77,
+    "difficulty": "medium"
+  },
+  {
+    "question": "有關Posterior tibial tendon dysfunction之敘述何者為非",
+    "falseOptions": ["扁平足", "病患足踝內側腫脹及疼痛", "足內旋"],
+    "correctOptions": ["足外旋"],
+    "category": "足部疾病",
+    "id": 221,
+    "page_num": 78,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Posterior tibial tendon dysfunction的理學檢查有",
+    "falseOptions": ["Adduction power ↑", "Supinated foot", "以上皆是"],
+    "correctOptions": ["Too-many – toe sign"],
+    "category": "足部疾病",
+    "id": 222,
+    "page_num": 78,
+    "difficulty": "hard"
+  },
+  {
+    "question": "跟骨骨折病人，大都有由高處跌落的病史，常合併的骨折為",
+    "falseOptions": [],
+    "correctOptions": ["以上皆是"],
+    "category": "跟骨骨折",
+    "id": 223,
+    "page_num": 79,
+    "difficulty": "easy"
+  },
+  {
+    "question": "跟骨骨折治療原則為",
+    "falseOptions": ["儘早讓病患活動及負重", "Extra – skeletal fixation（ESF）"],
+    "correctOptions": ["Strict non weight bearing if nonsurgical treatment"],
+    "category": "跟骨骨折",
+    "id": 224,
+    "page_num": 79,
+    "difficulty": "medium"
+  },
+  {
+    "question": "跟骨骨折理想的開刀時間為",
+    "falseOptions": ["儘早固定", "一個月後待患部皮膚無感染情況再手術"],
+    "correctOptions": ["待患處消腫視skin狀況而定"],
+    "category": "跟骨骨折",
+    "id": 225,
+    "page_num": 79,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Achilles tendon rupture 的PE finding 為",
+    "falseOptions": ["Negative Thompson test", "Weakness in dorsiflexion", "Significant palpable gap"],
+    "correctOptions": ["Positive Thompson test"],
+    "category": "跟腱斷裂",
+    "id": 226,
+    "page_num": 80,
+    "difficulty": "easy"
+  },
+  {
+    "question": "有關Achilles tendon rupture 之影像學檢查敘述何者為非",
+    "falseOptions": ["X-ray for R/O bony lesion", "Ultrasound 可迅速提供影像，供診斷參考"],
+    "correctOptions": ["Routine MRI 檢查為必要"],
+    "category": "跟腱斷裂",
+    "id": 227,
+    "page_num": 80,
+    "difficulty": "medium"
+  },
+  {
+    "question": "Achilles tendon rupture 手術治療之適應症為",
+    "falseOptions": ["Incomplete rupture", "Positive Thompson test", "以上皆是"],
+    "correctOptions": ["Neglected complete rupture"],
+    "category": "跟腱斷裂",
+    "id": 228,
+    "page_num": 80,
+    "difficulty": "hard"
+  }
+  ];
+    let current = 0;
+    let score = 0;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function showQuestion() {
+      const container = document.getElementById('quiz-container');
+      if (current >= quizData.length) {
+        container.innerHTML = `
+          <div class="result">測驗結束！<br>得分：${score} / ${quizData.length}</div>
+        `;
+        return;
+      }
+      const q = quizData[current];
+      const options = shuffle([...q.correctOptions, ...q.falseOptions]);
+      container.innerHTML = `
+        <div>
+          <div><b>第 ${current + 1} 題：</b>${q.question}</div>
+          <div id="options"></div>
+          <div class="meta">
+            類別: ${q.category} | 難度: ${q.difficulty} | 頁碼: ${q.page_num}
+          </div>
         </div>
-        <div class="container">
-            <div class="top">
-                <p>Login</p>
-            </div>
-            <div class="form">
-                <div class="user">
-                    <input type="text" class="username" required id = "username">
-                    <label for="username">Username</label>
-                </div> 
-                <div class="pass">
-                    <input type="password" class="password" required id = "password">
-                    <label for="password">Password</label>
-                </div>  
-                <div class="button">
-                    <a href="#" id = "sign_in">
-                        <button class="btn" onclick="check()">Sign In</button>
-                    </a>
-                </div>
-            </div>
-            <div class="bottom">
-                <p class="forgot">
-                    Forgot Password
-                </p>
-                <p class="newUser">
-                    New User?
-                    <span>Sign Up</span>
-                </p>
-            </div>
-        </div>
-    </body>
+      `;
+      const optionsDiv = document.getElementById('options');
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.className = 'option-btn';
+        btn.onclick = () => handleAnswer(btn, opt, q.correctOptions);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(btn, selected, correctOptions) {
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.classList.add('disabled'));
+      if (correctOptions.includes(selected)) {
+        btn.classList.add('correct');
+        score++;
+      } else {
+        btn.classList.add('incorrect');
+        buttons.forEach(b => {
+          if (correctOptions.includes(b.textContent)) {
+            b.classList.add('correct');
+          }
+        });
+      }
+      setTimeout(() => {
+        current++;
+        showQuestion();
+      }, 1000);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
